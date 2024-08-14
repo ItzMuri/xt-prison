@@ -13,6 +13,8 @@ function prisonBreakModules.canHackTerminal(terminalID)
     return (not terminal?.isHacked and not terminal?.isBusy) and true or false
 end
 
+-- Create Prisonbreak Hacking Zones --
+local QBCore = exports['qb-core']:GetCoreObject()
 
 function prisonBreakModules.createHackZones()
     for x = 1, #prisonBreakcfg.HackZones do
@@ -51,17 +53,17 @@ function prisonBreakModules.createHackZones()
                         event = "startGateHack",
                         label = "Hack Prison Gate",
                         action = function()
-                            prisonBreakModules.startGateHack(x)
-                        end,
-                        canInteract = function()
-                            local hack_tool = prisonBreakcfg.RequiredItems
+                            local hack_tool = prisonBreakcfg.RequiredItems 
                             local count = exports.ox_inventory:Search('count', hack_tool)
                             if count > 0 then
-                                local canHack = prisonBreakModules.canHackTerminal(x)
-                                return ((globalState.copCount >= prisonBreakcfg.MinimumPolice) and canHack) and true or false
+                                prisonBreakModules.startGateHack(x)
                             else
-                                return false
+                                lib.notify({ title = 'Gate Hack', description = 'You do not have the required item to hack the gate.', type = 'error' })
                             end
+                        end,
+                        canInteract = function()
+                            local canHack = prisonBreakModules.canHackTerminal(x)
+                            return ((globalState.copCount >= prisonBreakcfg.MinimumPolice) and canHack) and true or false
                         end
                     },
                 },
