@@ -14,7 +14,7 @@ function prisonBreakModules.canHackTerminal(terminalID)
 end
 
 -- Create Prisonbreak Hacking Zones --
-
+local QBCore = exports['qb-core']:GetCoreObject()
 
 function prisonBreakModules.createHackZones()
     for x = 1, #prisonBreakcfg.HackZones do
@@ -40,6 +40,33 @@ function prisonBreakModules.createHackZones()
                         end
                     }
                 }
+            })
+        elseif config.interact then
+            HackZones[x] = exports.interact:AddInteraction({
+                coords = zoneInfo.coords,
+                distance = 8.0, -- optional
+                interactDst = 2.0, -- optional
+                id = 'startGateHack', -- needed for removing interactions
+                name = 'startGateHack', -- optional
+                options = {
+                    {
+                        event = "startGateHack",
+                        label = "Hack Prison Gate",
+                        action = function()
+                            local hack_tool = prisonBreakcfg.RequiredItems 
+                        
+                            if QBCore.Functions.HasItem(hack_tool) then
+                                prisonBreakModules.startGateHack(x)
+                            else
+                                QBCore.Functions.Notify("You do not have the required item to hack the gate.", "error")
+                            end
+                        end,
+                        canInteract = function()
+                            local canHack = prisonBreakModules.canHackTerminal(x)
+                            return ((globalState.copCount >= prisonBreakcfg.MinimumPolice) and canHack) and true or false
+                        end
+                    },
+                },
             })
         else
             HackZones[x] = exports['qb-target']:AddCircleZone("HackZone"..x, zoneInfo.coords, zoneInfo.radius, {
@@ -83,6 +110,8 @@ function prisonBreakModules.removeHackZones()
     for x = 1, #HackZones do
         if config.useOxtarget then
             exports.ox_target:removeZone(HackZones[x])
+        elseif config.interact then
+            exports.interact:RemoveInteraction('startGateHack')
         else
             exports['qb-target']:RemoveZone("HackZone"..x)
         end

@@ -4,9 +4,10 @@ return {
     Freedom = vec4(1842.58, 2573.43, 45.89, 357.77), -- Freedom spawn coords
     RemoveJob = true,          -- Remove player jobs when send to jail
     useOxtarget = false,
+    interact = true,
     -- Create Target Zone to Check Time (if XTPrisonJobs is false) --
     CheckOut = {
-        coords = vec3(1836.5, 2592.05, 46.35),
+        coords = vec3(1828.5418, 2580.1574, 46.014335),
         size = vec3(0.9, 7.8, 1.45),
         rotation = 0.5,
     },
@@ -37,7 +38,7 @@ return {
     -- Prison Doctor --
     PrisonDoctor = {
         model = 's_m_m_doctor_01',
-        coords = vector4(1746.37, 2467.26, 45.85, 354.14),
+        coords = vector4(1769.7862, 2571.9631, 45.729831, 137.36369),
         scenario = 'WORLD_HUMAN_CLIPBOARD',
         healLength = 5
     },

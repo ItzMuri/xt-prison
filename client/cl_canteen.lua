@@ -39,6 +39,42 @@ local function initCanteen()
                 end
             }
         })
+    elseif config.interact then
+        exports.interact:AddLocalEntityInteraction({
+            entity = canteenPed,
+            name = 'onSelectCanteen', -- optional
+            id = 'onSelectCanteen', -- needed for removing interactions
+            distance = 8.0, -- optional
+            interactDst = 3.0, -- optional
+            ignoreLos = true, -- optional ignores line of sight
+            offset = vec3(0.0, 0.0, 0.0), -- optional
+            options = {
+                {
+                    label = 'Receive Meal',
+                    icon = 'fas fa-utensils',
+                    action = function(entity)
+                        if lib.progressCircle({
+                            label = 'Receiving Canteen Meal...',
+                            duration = (canteenInfo.mealLength * 1000),
+                            position = 'bottom',
+                            useWhileDead = true,
+                            canCancel = false,
+                            disable = {
+                                move = true,
+                                car = true,
+                                combat = true,
+                                sprint = true,
+                            },
+                        }) then
+                            local receiveMeal = lib.callback.await('xt-prison:server:receiveCanteenMeal', false)
+                            if receiveMeal then
+                                lib.notify({ title = 'Received Meal', description = 'You received a meal from the canteen!', type = 'success' })
+                            end
+                        end
+                    end,
+                },
+            },
+        })
     else
         exports['qb-target']:AddTargetEntity(canteenPed, {
             options = {
@@ -79,6 +115,8 @@ local function removeCanteen()
     
     if config.useOxtarget then
         exports.ox_target:removeLocalEntity(canteenPed, 'Receive Meal')
+    elseif config.interact then
+        exports.interact:RemoveLocalEntityInteraction(canteenPed, 'onSelectCanteen')
     else
         exports['qb-target']:RemoveTargetEntity(canteenPed)
     end

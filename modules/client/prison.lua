@@ -50,6 +50,29 @@ function prisonModules.createCheckoutLocation()
                     }
                 }
             })
+        elseif config.interact then
+            CheckOutZone = exports.interact:AddInteraction({
+                coords = checkoutInfo.coords,
+                distance = 8.0, -- optional
+                interactDst = 3.0, -- optional
+                id = 'CheckOutZone', -- needed for removing interactions
+                name = 'CheckOutZone', -- optional
+                ignoreLos = false, -- optional ignores line of sight
+                offset = vec3(0.0, 0.0, 0.0), -- optional
+                options = {
+                     {
+                        label = 'Check Time',
+                        event = "checkTime",
+                        action = function()
+                            local timeLeft = lib.callback.await('xt-prison:server:checkJailTime', false)
+                            if timeLeft <= 0 then
+                                prisonModules.exitPrison(true)
+                            end
+                        end
+                    },
+                }
+            })
+            
         else
             CheckOutZone = exports['qb-target']:AddBoxZone("CheckOutZone", checkoutInfo.coords, checkoutInfo.size[1], checkoutInfo.size[2], {
                 name = "CheckOutZone",
@@ -84,6 +107,8 @@ function prisonModules.removeCheckoutLocation()
     else
         if config.useOxtarget then
             exports.ox_target:removeZone(CheckOutZone)
+        elseif config.interact then
+            exports.interact:RemoveInteraction('CheckOutZone')
         else
             exports['qb-target']:RemoveZone("CheckOutZone")
         end
