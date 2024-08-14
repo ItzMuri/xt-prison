@@ -53,7 +53,7 @@ function prisonBreakModules.createHackZones()
                         action = function()
                             prisonBreakModules.startGateHack(x)
                         end,
-                        canInteract = function(entity, coords, args)
+                        canInteract = function()
                             local hack_tool = prisonBreakcfg.RequiredItems
                             local count = exports.ox_inventory:Search('count', hack_tool)
                             if count > 0 then
