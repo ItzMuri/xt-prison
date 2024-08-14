@@ -54,11 +54,11 @@ function prisonBreakModules.createHackZones()
                         label = "Hack Prison Gate",
                         action = function()
                             local hack_tool = prisonBreakcfg.RequiredItems 
-                        
-                            if QBCore.Functions.HasItem(hack_tool) then
+                            local count = exports.ox_inventory:Search('count', hack_tool)
+                            if count > 0 then
                                 prisonBreakModules.startGateHack(x)
                             else
-                                QBCore.Functions.Notify("You do not have the required item to hack the gate.", "error")
+                                lib.notify({ title = 'Gate Hack', description = 'You do not have the required item to hack the gate.', type = 'error' })
                             end
                         end,
                         canInteract = function()
