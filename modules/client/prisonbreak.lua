@@ -14,7 +14,6 @@ function prisonBreakModules.canHackTerminal(terminalID)
 end
 
 -- Create Prisonbreak Hacking Zones --
-local QBCore = exports['qb-core']:GetCoreObject()
 
 function prisonBreakModules.createHackZones()
     for x = 1, #prisonBreakcfg.HackZones do
